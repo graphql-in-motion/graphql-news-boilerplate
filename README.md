@@ -35,3 +35,8 @@ yarn add nodemon
 ```
 yarn dev
 ```
+
+### add lodash
+```
+yarn add lodash
+```

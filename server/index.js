@@ -4,13 +4,14 @@ import { buildSchema } from 'graphql';
 
 const schema = buildSchema(`
     type Link{
-        _id: Int!
-        url: String
+        _id: Int! @unique
+        url: String!
         description: String!
     }
     type User{
-        _id: Int!,
+        _id: Int! @unique
         username:String!
+        about: String
     }
     type Query {
         allLinks: [Link!]!
@@ -24,8 +25,8 @@ const links =[
     {_id: 1 ,url: 'https://examle1.com', description: 'a website 1' },
 ];
 const users =[
-    {_id: 0 , username: 'user1'},
-    {_id: 1 , username: 'user2'},
+    {_id: 0 , username: 'user1',about: 'Super hero user'},
+    {_id: 1 , username: 'user2', about: 'Normal user'},
 ];
 const root = {
   allLinks: () => links,
