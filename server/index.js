@@ -1,6 +1,7 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { buildSchema } from 'graphql';
+import { find} from 'lodash';
 
 const schema = buildSchema(`
     type Link{
@@ -15,9 +16,9 @@ const schema = buildSchema(`
     }
     type Query {
         allLinks: [Link!]!
-        link(_id: Int): Link!
+        link(id: Int): Link
         allUsers: [User!]!
-        user(_id: Int) : User!
+        user(id: Int!) : User!
     }
 `);
 const links =[
@@ -25,14 +26,17 @@ const links =[
     {_id: 1 ,url: 'https://examle1.com', description: 'a website 1' },
 ];
 const users =[
-    {_id: 0 , username: 'user1',about: 'Super hero user'},
+    {_id: 0 , username: 'user1', about: 'Super hero user'},
     {_id: 1 , username: 'user2', about: 'Normal user'},
 ];
 const root = {
   allLinks: () => links,
-  link: ({_id}) => links.filter(i=> i._id === _id)[0],
+  link: ({ id })=> {
+      console.log(id);
+    return find(links,{ _id:id  });
+  } ,
   allUsers: () => users,
-  user: ({_id}) => users.filter(u=> u._id === _id)[0],
+  user: ({ id }) => find(users,{ _id:id }),
 };
 
 const app = express();
