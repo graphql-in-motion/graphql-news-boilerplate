@@ -32,3 +32,6 @@ yarn add nodemon
 ```
 "dev" : "nodemon --exec babel-node ./server/index.js"
 ```
+```
+yarn dev
+```
