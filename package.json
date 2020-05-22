@@ -5,7 +5,8 @@
   "author": "Tyler Reckart <tyler.reckart@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "babel-node ./server/index.js"
+    "start": "babel-node ./server/index.js",
+    "dev": "nodemon --exec babel-node ./server/index.js"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
@@ -23,7 +24,7 @@
     "express": "^4.16.2",
     "express-graphql": "^0.6.11",
     "graphql": "^0.12.3",
-    "nodemon": "^1.14.11",
+    "nodemon": "^2.0.4",
     "prettier": "^1.10.2"
   }
 }

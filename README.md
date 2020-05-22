@@ -24,3 +24,11 @@ yarn start
 ### open in the browser
 
 http://localhost:4000/graphql
+
+### add nodemo
+```
+yarn add nodemon
+```
+```
+"dev" : "nodemon --exec babel-node ./server/index.js"
+```
