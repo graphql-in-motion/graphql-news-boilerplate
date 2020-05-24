@@ -1,46 +1,57 @@
-import express from 'express';
-import graphqlHTTP from 'express-graphql';
-import { buildSchema } from 'graphql';
-import { find} from 'lodash';
+import express from 'express'
+import graphqlHTTP from 'express-graphql'
+// import { buildSchema } from 'graphql'
+import { makeExecutableSchema } from 'graphql-tools'
+import find from 'lodash/find'
 
-const schema = buildSchema(`
-    type Link{
-        _id: Int! @unique
-        url: String!
-        description: String!
-    }
-    type User{
-        _id: Int! @unique
-        username:String!
-        about: String
-    }
-    type Query {
-        allLinks: [Link!]!
-        link(id: Int): Link
-        allUsers: [User!]!
-        user(id: Int!) : User!
-    }
-`);
-const links =[
-    {_id: 0 ,url: 'https://sumithpd.com', description: 'my website' },
-    {_id: 1 ,url: 'https://examle1.com', description: 'a website 1' },
-];
-const users =[
-    {_id: 0 , username: 'user1', about: 'Super hero user'},
-    {_id: 1 , username: 'user2', about: 'Normal user'},
-];
-const root = {
-  allLinks: () => links,
-  link: ({ id })=> {
-      console.log(id);
-    return find(links,{ _id:id  });
-  } ,
-  allUsers: () => users,
-  user: ({ id }) => find(users,{ _id:id }),
-};
+const typeDefs = `
+  type Link {
+    id: Int! @unique
+    url: String!
+    description: String
+    author: User!
+  }
+  type User {
+    id: Int! @unique
+    username: String!
+    about: String
+  }
+  type Query {
+    allLinks: [Link]
+    link(id: Int!): Link
+    allUsers: [User]
+    user(id: Int!): User
+  }
+`
 
-const app = express();
+const links = [
+  { id: 0, author: 0, url: 'https://example.com', description: 'example site' },
+  { id: 1, author: 1, url: 'https://google.com', description: 'Google site' },
+]
 
-app.use('/graphql', graphqlHTTP({ schema, rootValue: root, graphiql: true }));
+const users = [
+  { id: 0, username: 'user1', about: 'user about1' },
+  { id: 1, username: 'user2', about: 'user about2' },
+]
 
-app.listen(4000, () => console.log('Running a graphql server on localhost:4000/graphql'));
+const resolvers = {
+  Query: {
+    allLinks: () => links,
+    link: (_, { id }) => find(links, { id }),
+    allUsers: () => users,
+    user: (_, { id }) => find(users, { id }),
+  },
+  Link: {
+    author: ({ author }) => find(users, { id: author }),
+  },
+}
+
+const schema = makeExecutableSchema({ typeDefs, resolvers })
+
+const app = express()
+const graphqlHTTPOptions = {
+  schema,
+  graphiql: true,
+}
+app.use('/graphql', graphqlHTTP(graphqlHTTPOptions))
+app.listen(4000, () => console.log('🏃‍♂️ server is running on port 4000'))
