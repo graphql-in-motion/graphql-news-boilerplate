@@ -49,6 +49,13 @@ const commentsList = [
   { id: 3, parent: 2, author: 1,content: 'Comment 4' },
   { id: 4, parent: null, author: 1,content: 'Comment 5' },
 ];
+function getComments(commentId){
+  const comments = commentsList.filter(comment=> comment.parent == commentId);
+  if(comments.length >0){
+    return comments;
+  }
+  return null;
+}
 const resolvers = {
   Query: {
     allLinks: () => links,
@@ -61,6 +68,11 @@ const resolvers = {
     comments: ({ comments }) =>
     comments.map(i => find(commentsList, { id: i })),
   },
+    Comment:{
+      author:({author}) => find(users, {id: author}),
+      comments:({id}) =>getComments(id),
+    },
+  
 };
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
